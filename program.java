@@ -13,19 +13,15 @@ class program {
         j1[1] = 2;
         j2[0] = 3;
         j2[1] = 3;
-        // pathfind and print result
-        //int[][] resultoffind = pathFind(grid);
-       // System.out.println(resultoffind[0][0]);
-       int[] testpoint1 = new int[2];
-       int[] testpoint2 = new int[2];
-       testpoint1[0] = 0;
-       testpoint1[1] = 1;
-       testpoint2[0] = 1;
-       testpoint2[1] = 2;
-
+        
        
-       double sample = distance(s,j1);
-       System.out.println(sample);
+        int[][] result = pathFind(s, j1, j2);
+       int a = 0;
+       while(a < 6){
+           System.out.println("("+ result[a][0]+" , "+ result[a][1] + ")"); 
+           a++;
+       } 
+       
        
  
     }
@@ -107,11 +103,31 @@ class program {
             movement2 = orthagPath(coords2, coords1);
             movement3 = orthagPath(coords1, startcoord);
         }
+        //combine 3 movements into result array
 
-        for(int i = 0;i<3;i++){
-            
+        for(int i = 0; i < 2;i++){
+            for(int z = 0;z < 2;z++){
+                
+                result[i][z] = movement1[i][z];
+                
+            }
 
         }
+        
+        for(int i = 2;i<4;i++){
+            for(int z = 0;z<2;z++){
+                result[i][z] = movement2[i-2][z];
+            }
+
+        }
+        
+        for(int i = 4;i<6;i++){
+            for(int z = 0;z<2;z++){
+                result[i][z] = movement3[i-4][z];
+            }
+
+        }
+        
 
         
         

@@ -1,4 +1,5 @@
     import java.lang.Math;
+    import java.util.*;
 
 class program {
     public static void main(String[] args) {
@@ -7,20 +8,26 @@ class program {
         int[] s = new int[2];
         int[] j1 = new int[2];
         int[] j2 = new int[2];
+        int[] j3 = new int[2];
         s[0] = 0;
         s[1] = 1;
         j1[0] = 0;
         j1[1] = 2;
         j2[0] = 3;
         j2[1] = 3;
+        j3[0] = 1;
+        j3[1] = 2;
         
+        ArrayList<int[]> coordsList = new ArrayList<int[]>();
+        coordsList.add(j1);
+        coordsList.add(j2);
+        coordsList.add(j3);
        
-        int[][] result = pathFind(s, j1, j2);
-       int a = 0;
-       while(a < 6){
+        List<Object[]> result = pathFind(s, coordsList);
+       for(int a=0;a<result.size();a++){
+        Object[] aStep = result.get(a);
             //print results
-           System.out.println("("+ result[a][0]+" , "+ result[a][1] + ")"); 
-           a++;
+           System.out.println("("+ aStep[0]+" , "+ aStep[1] + ")"); 
        } 
        
        
@@ -47,101 +54,145 @@ class program {
      * finds the path from one point to the other with only orthagonal movements
      * point1 - coordinates of point 1
      * point2 - coordinates of point 2
-     * returns a 2d array , in which each row is a step, column 1 is the number of units moved and column 2 is the direction
+     * returns a 2d array , in which each row is a step, column 1 is the number of units moved and column 2 is the direction (u,d,l,r)
      */
-    static int[][] orthagPath(int[] point1, int[] point2){
-        int[][] path = new int[2][2];
-        // for the second value in the 2 dimensional array, 1 is up , 2 is left, 3 is down, 4 is right, and 0 is the same place
+    static ArrayList<Object[]> orthagPath(int[] point1, int[] point2){
+        ArrayList<Object[]> path = new ArrayList<>();
+        
         // calculate horizontal movement
+        Object[] HrztlMv = new Object[2];
+        Object[] VrtMv = new Object[2];
         if( point2[0] > point1[0]){
-            
-            path[0][0] = point2[0] - point1[0];
-            path[0][1] = 4;
-
-
+            HrztlMv[0] = point2[0] - point1[0];
+            HrztlMv[1] = "R";
+            path.add(HrztlMv);
         } else if( point2[0] < point1[0]){
-            path[0][0] = point1[0] - point2[0];
-            path[0][1] = 2;
-        } else{
-            path[0][0] = 0;
-            path[0][1] = 0;
+            HrztlMv[0] = point1[0] - point2[0];
+            HrztlMv[1] = "L";
+            path.add(HrztlMv);
+            
+        } // else no need to move left or right
 
-        }
         //calculate vertiical movement
         if( point2[1] > point1[1]){
-            path[1][0] = point2[1] - point1[1];
-            path[1][1] = 1;
-
-
+            VrtMv[0] = point2[1] - point1[1];
+            VrtMv[1] = "U";
+            path.add(VrtMv);
         } else if( point2[1] < point1[1]){
-            path[1][0] = point1[0] - point2[0];
-            path[1][1] = 3;
-        } else{
-            path[1][0] = 0;
-            path[1][1] = 0;
-        }
+            VrtMv[0] = point1[1] - point2[1];
+            VrtMv[1] = "D";
+            path.add(VrtMv);
+        } // else no need to move up or down
 
+        
+       
         return path;
 
     }
     /**
      * Find the steps that the robot needs to take to get from the start to two targets and back
      * startcoord - starting coordinates
-     * coords1 - coordinates of 1st target
-     * coords2 - coordinates of 2nd target
-     * returns a 2d array , in which each row is a step, column 1 is the number of units moved and column 2 is the direction
+     * coordslist - list of target coordinates
+     * returns a ArrayList 
      */
 
-    static int[][]  pathFind(int[] startcoord, int[] coords1, int[] coords2){
-        int[][] result = new int[6][2];
-        
-        
-        //find and compare the distance between start and each coordinate
-        double distance1 = distance(startcoord, coords1);
-        double distance2 = distance(startcoord, coords2);
-        //state the 3 arrays for each movement
-        int[][] movement1 = new int[2][2];
-        int[][] movement2 = new int[2][2];
-        int[][] movement3 = new int[2][2];
-        
-        if(distance1 < distance2){
-            movement1 = orthagPath(startcoord, coords1);
-            movement2 = orthagPath(coords1, coords2);
-            movement3 = orthagPath(coords2, startcoord);
-        } else {
-            movement1 = orthagPath(startcoord, coords2);
-            movement2 = orthagPath(coords2, coords1);
-            movement3 = orthagPath(coords1, startcoord);
-        }
-        //combine 3 movements into result array
+    static List<Object[]> pathFind(int[] startCoord, ArrayList<int[]> coordsList){
 
-        for(int i = 0; i < 2;i++){
-            for(int z = 0;z < 2;z++){
+        int[] curr = new int[2];
+        curr[0] = startCoord[0];
+        curr[1] = startCoord[1];
+        
+
+        List<Object[]> steps = new ArrayList<>();
+
+        while(!coordsList.isEmpty()){
+            // sort desc by distance
+            coordsList.sort(new Comparator<int[]>() {
+                public int compare(int[] p1, int[] p2) {
+                    double d1 = distance(curr, p1);
+                    double d2 = distance(curr, p2);
+                    if (d1 > d2) return -1;
+                    if (d2 > d1) return 1;
+                    return 0;
+                }
+            });
+            int[] nextLoc = coordsList.remove(coordsList.size()-1);
+
+            ArrayList<Object[]> movements = orthagPath(startCoord, nextLoc);
+            for (int i=0;i<movements.size();i++){
                 
-                result[i][z] = movement1[i][z];
+               steps.add(movements.get(i));
                 
             }
-
+            curr[0] = nextLoc[0];
+            curr[1] = nextLoc[1];
         }
-        
-        for(int i = 2;i<4;i++){
-            for(int z = 0;z<2;z++){
-                result[i][z] = movement2[i-2][z];
+
+        if (curr[0] != startCoord[0] || curr[1] != startCoord[0]){
+            ArrayList<Object[]> movements = orthagPath(curr, startCoord);
+            for (int i=0;i<movements.size();i++){
+                
+                steps.add(movements.get(i));
+            
             }
-
         }
-        
-        for(int i = 4;i<6;i++){
-            for(int z = 0;z<2;z++){
-                result[i][z] = movement3[i-4][z];
-            }
 
-        }
-        
+        return steps;
 
         
+
+
         
-        return result;
+
+        // int[][] result = new int[6][2];
+        
+        
+        // //find and compare the distance between start and each coordinate
+        // double distance1 = distance(startcoord, coords1);
+        // double distance2 = distance(startcoord, coords2);
+        // //state the 3 arrays for each movement
+        // int[][] movement1 = new int[2][2];
+        // int[][] movement2 = new int[2][2];
+        // int[][] movement3 = new int[2][2];
+        
+        // if(distance1 < distance2){
+        //     movement1 = orthagPath(startcoord, coords1);
+        //     movement2 = orthagPath(coords1, coords2);
+        //     movement3 = orthagPath(coords2, startcoord);
+        // } else {
+        //     movement1 = orthagPath(startcoord, coords2);
+        //     movement2 = orthagPath(coords2, coords1);
+        //     movement3 = orthagPath(coords1, startcoord);
+        // }
+        // //combine 3 movements into result array
+
+        // for(int i = 0; i < 2;i++){
+        //     for(int z = 0;z < 2;z++){
+                
+        //         result[i][z] = movement1[i][z];
+                
+        //     }
+
+        // }
+        
+        // for(int i = 2;i<4;i++){
+        //     for(int z = 0;z<2;z++){
+        //         result[i][z] = movement2[i-2][z];
+        //     }
+
+        // }
+        
+        // for(int i = 4;i<6;i++){
+        //     for(int z = 0;z<2;z++){
+        //         result[i][z] = movement3[i-4][z];
+        //     }
+
+        // }
+        
+
+        
+        
+        // return result;
     }
 
     

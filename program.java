@@ -18,6 +18,7 @@ class program {
         int[][] result = pathFind(s, j1, j2);
        int a = 0;
        while(a < 6){
+            //print results
            System.out.println("("+ result[a][0]+" , "+ result[a][1] + ")"); 
            a++;
        } 
@@ -42,11 +43,18 @@ class program {
         
         return distance;
     }
+    /**
+     * finds the path from one point to the other with only orthagonal movements
+     * point1 - coordinates of point 1
+     * point2 - coordinates of point 2
+     * returns a 2d array , in which each row is a step, column 1 is the number of units moved and column 2 is the direction
+     */
     static int[][] orthagPath(int[] point1, int[] point2){
         int[][] path = new int[2][2];
         // for the second value in the 2 dimensional array, 1 is up , 2 is left, 3 is down, 4 is right, and 0 is the same place
+        // calculate horizontal movement
         if( point2[0] > point1[0]){
-            //find if the x coord of point 2 is greater than the x coord of point 1
+            
             path[0][0] = point2[0] - point1[0];
             path[0][1] = 4;
 
@@ -59,6 +67,7 @@ class program {
             path[0][1] = 0;
 
         }
+        //calculate vertiical movement
         if( point2[1] > point1[1]){
             path[1][0] = point2[1] - point1[1];
             path[1][1] = 1;
@@ -71,6 +80,7 @@ class program {
             path[1][0] = 0;
             path[1][1] = 0;
         }
+
         return path;
 
     }
@@ -79,7 +89,7 @@ class program {
      * startcoord - starting coordinates
      * coords1 - coordinates of 1st target
      * coords2 - coordinates of 2nd target
-     * 
+     * returns a 2d array , in which each row is a step, column 1 is the number of units moved and column 2 is the direction
      */
 
     static int[][]  pathFind(int[] startcoord, int[] coords1, int[] coords2){

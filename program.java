@@ -91,7 +91,7 @@ class program {
 
     }
     /**
-     * Find the steps that the robot needs to take to get from the start to two targets and back
+     * Find the steps that the robot needs to take to get from the start to n targets and back
      * startcoord - starting coordinates
      * coordslist - list of target coordinates
      * returns a ArrayList 

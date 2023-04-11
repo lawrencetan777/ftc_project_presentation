@@ -19,6 +19,7 @@ class program {
         j3[1] = 2;
         
         ArrayList<int[]> coordsList = new ArrayList<int[]>();
+        //add points to the coordinate list
         coordsList.add(j1);
         coordsList.add(j2);
         coordsList.add(j3);
@@ -117,7 +118,7 @@ class program {
                 }
             });
             int[] nextLoc = coordsList.remove(coordsList.size()-1);
-
+            //Pathfind from each coordinate to the next and add it to the full ArrayList.
             ArrayList<Object[]> movements = orthagPath(startCoord, nextLoc);
             for (int i=0;i<movements.size();i++){
                 
@@ -127,6 +128,7 @@ class program {
             curr[0] = nextLoc[0];
             curr[1] = nextLoc[1];
         }
+        //Add the steps to go from the furthest point back to the starting point.
 
         if (curr[0] != startCoord[0] || curr[1] != startCoord[0]){
             ArrayList<Object[]> movements = orthagPath(curr, startCoord);
@@ -138,61 +140,6 @@ class program {
         }
 
         return steps;
-
-        
-
-
-        
-
-        // int[][] result = new int[6][2];
-        
-        
-        // //find and compare the distance between start and each coordinate
-        // double distance1 = distance(startcoord, coords1);
-        // double distance2 = distance(startcoord, coords2);
-        // //state the 3 arrays for each movement
-        // int[][] movement1 = new int[2][2];
-        // int[][] movement2 = new int[2][2];
-        // int[][] movement3 = new int[2][2];
-        
-        // if(distance1 < distance2){
-        //     movement1 = orthagPath(startcoord, coords1);
-        //     movement2 = orthagPath(coords1, coords2);
-        //     movement3 = orthagPath(coords2, startcoord);
-        // } else {
-        //     movement1 = orthagPath(startcoord, coords2);
-        //     movement2 = orthagPath(coords2, coords1);
-        //     movement3 = orthagPath(coords1, startcoord);
-        // }
-        // //combine 3 movements into result array
-
-        // for(int i = 0; i < 2;i++){
-        //     for(int z = 0;z < 2;z++){
-                
-        //         result[i][z] = movement1[i][z];
-                
-        //     }
-
-        // }
-        
-        // for(int i = 2;i<4;i++){
-        //     for(int z = 0;z<2;z++){
-        //         result[i][z] = movement2[i-2][z];
-        //     }
-
-        // }
-        
-        // for(int i = 4;i<6;i++){
-        //     for(int z = 0;z<2;z++){
-        //         result[i][z] = movement3[i-4][z];
-        //     }
-
-        // }
-        
-
-        
-        
-        // return result;
     }
 
     

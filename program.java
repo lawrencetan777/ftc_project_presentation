@@ -94,7 +94,7 @@ class program {
      * Find the steps that the robot needs to take to get from the start to n targets and back
      * startcoord - starting coordinates
      * coordslist - list of target coordinates
-     * returns a ArrayList 
+     * returns a ArrayList of steps the robot needs to take 
      */
 
     static List<Object[]> pathFind(int[] startCoord, ArrayList<int[]> coordsList){

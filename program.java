@@ -164,24 +164,24 @@ class program {
     }
 
 
-    // /**
-    //  * Dad's better path find algorithm.
-    //  */
-    // static int pathFind2(int[] curr, ArrayList<int[]> coordsList, int distance, List<Object[]> steps) {
-    //     if (coordsList.isEmpty()) return distance;
+    /**
+     * Dad's better path find algorithm.
+     */
+    static int pathFind2(int[] curr, ArrayList<int[]> coordsList, int distance, List<Object[]> steps) {
+        if (coordsList.isEmpty()) return distance;
 
-    //     coordsList.sort(Comparator.comparing(coord -> manhattanDistance(coord, curr)));
+        coordsList.sort(Comparator.comparing(coord -> manhattanDistance(coord, curr)));
 
-    //     for (int[] next : coordsList){
+        for (int i=0;i<coordsList.size();i++) {
+            
+        }
 
-    //     }
+        return 1;
+    }
 
-    //     return null;
-    // }
-
-    // static int manhattanDistance(int[] p1, int[] p2) {
-    //     return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
-    // }
+    static int manhattanDistance(int[] p1, int[] p2) {
+        return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
+    }
 
     /**
      * Find the steps that the robot needs to take to get from the start to n targets and back

@@ -2,9 +2,9 @@
     import java.util.*;
 
 /**
- * This program routes a bot on a grid from user inputed starting point to any number of junction points in the order of distance from the previous point,
- *  then back to the start. 
- * 
+ * This program generations movement instructions for a bot on a grid from a starting point to visit
+ * any number of junction points in the order of distance from the previous point, then back to the 
+ * start.
  */
 class program {
     public static void main(String[] args) {
@@ -45,6 +45,7 @@ class program {
         } catch (Exception e) {
             // Incorrect input format
             System.out.println("Please enter the integer only. Please try again.");
+            System.exit(1);
             
         }
 
@@ -57,6 +58,7 @@ class program {
             String[] junctionPoint = junctionCoordInput.split(",");
             junctionCoord[0] = Integer.valueOf(junctionPoint[0].trim());
             junctionCoord[1] = Integer.valueOf(junctionPoint[1].trim());
+            
             //System.out.println(junctionCoord[0] + " , " + junctionCoord[1]);
                     
             //add points to the coordinate list
@@ -78,10 +80,28 @@ class program {
         System.out.println("Here are the steps the bot will take to go from the starting point to all target points, and back to the start. The result is in the format (u , d) which u is the amount of units moved and d is the direction (U for up, D for down, L for left , R for right)");
         System.out.println();
 
+        System.out.println("Starting Point: (" + startingPoint[0] + ","+ startingPoint[1]+")");
+        int distanceMoved = 0;
        for(int a=0;a<result.size();a++){
         Object[] aStep = result.get(a);
+
+        switch ((String)aStep[1]){
+            case "U":
+            startingPoint[1] += (int) aStep[0];
+            break;
+            case "D":
+            startingPoint[1] -= (int) aStep[0];
+            break;
+            case "L":
+            startingPoint[0] -= (int) aStep[0];
+            break;
+            case "R":
+            startingPoint[0] += (int) aStep[0];
+        }
+        distanceMoved += (int)aStep[0];
+        
             //print results
-           System.out.println("("+ aStep[0]+" , "+ aStep[1] + ")"); 
+           System.out.println("("+ aStep[0]+" , "+ aStep[1] + ") AT ("+startingPoint[0] +","+startingPoint[1]+") distance traveled = " + distanceMoved); 
        } 
        
     }
@@ -142,6 +162,27 @@ class program {
         return path;
 
     }
+
+
+    // /**
+    //  * Dad's better path find algorithm.
+    //  */
+    // static int pathFind2(int[] curr, ArrayList<int[]> coordsList, int distance, List<Object[]> steps) {
+    //     if (coordsList.isEmpty()) return distance;
+
+    //     coordsList.sort(Comparator.comparing(coord -> manhattanDistance(coord, curr)));
+
+    //     for (int[] next : coordsList){
+
+    //     }
+
+    //     return null;
+    // }
+
+    // static int manhattanDistance(int[] p1, int[] p2) {
+    //     return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
+    // }
+
     /**
      * Find the steps that the robot needs to take to get from the start to n targets and back
      * startcoord - starting coordinates
@@ -173,7 +214,7 @@ class program {
             int[] nextLoc = coordsList.remove(coordsList.size() - 1);
 
             //Pathfind from each coordinate to the next and add it to the full ArrayList.
-            ArrayList<Object[]> movements = orthagPath(startCoord, nextLoc);
+            ArrayList<Object[]> movements = orthagPath(curr, nextLoc);
             for (int i = 0; i < movements.size() ; i++){
                 
                steps.add(movements.get(i));

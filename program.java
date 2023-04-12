@@ -1,38 +1,89 @@
     import java.lang.Math;
     import java.util.*;
 
+/**
+ * This program routes a bot on a grid from user inputed starting point to any number of junction points in the order of distance from the previous point,
+ *  then back to the start. 
+ * 
+ */
 class program {
     public static void main(String[] args) {
         
-        //define starting and target coordinates
-        int[] s = new int[2];
-        int[] j1 = new int[2];
-        int[] j2 = new int[2];
-        int[] j3 = new int[2];
-        s[0] = 0;
-        s[1] = 1;
-        j1[0] = 0;
-        j1[1] = 2;
-        j2[0] = 3;
-        j2[1] = 3;
-        j3[0] = 1;
-        j3[1] = 2;
-        
+        //define starting  coordinate
+        int[] startingPoint = new int[2];
+
+        //define final junction coordinates
         ArrayList<int[]> coordsList = new ArrayList<int[]>();
-        //add points to the coordinate list
-        coordsList.add(j1);
-        coordsList.add(j2);
-        coordsList.add(j3);
-       
-        List<Object[]> result = pathFind(s, coordsList);
+
+        Scanner scannerInput = new Scanner(System.in);
+        
+        //Display simulation information
+        System.out.println();
+        System.out.println("======================================");
+        System.out.println("Welcome to the bot movement simulation");
+        System.out.println("======================================");
+        System.out.println();
+
+        System.out.println("This program routes a bot on a grid from user inputed starting point to any number of junction points in the order of distance from the previous point,then back to the start.");
+        System.out.println();
+        System.out.println();
+
+        //Prompts user input and records the coordinates of the starting point
+        System.out.println("Enters the coordinates of the starting point as x,y (no spaces). X and Y has to be between 0 and 10: ");
+        String startCoordInput = scannerInput.nextLine();
+        String[] startCoord = startCoordInput.split(",");
+        startingPoint[0] = Integer.valueOf(startCoord[0].trim());
+        startingPoint[1] = Integer.valueOf(startCoord[1].trim());
+        //System.out.println(startingPoint[0] + " , " + startingPoint[1]);
+
+        //Prompts user for number of junction points
+        System.out.println("Enters the number of junction points you want to reach:");
+        int numOfJunctions = 0;
+
+        try {
+            numOfJunctions = Integer.valueOf(scannerInput.nextLine());
+        } catch (Exception e) {
+            // Incorrect input format
+            System.out.println("Please enter the integer only. Please try again.");
+            
+        }
+
+
+        //Prompts user for each junction coordinate
+        for (int i = 0; i< numOfJunctions; i++) {
+            int[] junctionCoord = new int[2];
+            System.out.println("Enters the coordinates of next target point as x,y (no spaces). X and Y has to be between 0 and 10: ");
+            String junctionCoordInput = scannerInput.nextLine();
+            String[] junctionPoint = junctionCoordInput.split(",");
+            junctionCoord[0] = Integer.valueOf(junctionPoint[0].trim());
+            junctionCoord[1] = Integer.valueOf(junctionPoint[1].trim());
+            //System.out.println(junctionCoord[0] + " , " + junctionCoord[1]);
+                    
+            //add points to the coordinate list
+            coordsList.add(junctionCoord);
+
+        }
+
+        scannerInput.close();
+
+
+       // call the function
+        List<Object[]> result = pathFind(startingPoint, coordsList);
+
+        //print results
+        System.out.println();
+        System.out.println("========");
+        System.out.println("RESULT");
+        System.out.println("========");
+        System.out.println("Here are the steps the bot will take to go from the starting point to all target points, and back to the start. The result is in the format (u , d) which u is the amount of units moved and d is the direction (U for up, D for down, L for left , R for right)");
+        System.out.println();
+
        for(int a=0;a<result.size();a++){
         Object[] aStep = result.get(a);
             //print results
            System.out.println("("+ aStep[0]+" , "+ aStep[1] + ")"); 
        } 
        
-       
- 
     }
 
     /**
@@ -45,10 +96,8 @@ class program {
         //find the distance between 2 points using distance formula 
         double distance = (point2[0]-point1[0])^2 + (point2[1]-point1[1])^2;
         
-        
         distance = Math.sqrt(distance);
 
-        
         return distance;
     }
     /**
@@ -58,16 +107,18 @@ class program {
      * returns a 2d array , in which each row is a step, column 1 is the number of units moved and column 2 is the direction (u,d,l,r)
      */
     static ArrayList<Object[]> orthagPath(int[] point1, int[] point2){
+
         ArrayList<Object[]> path = new ArrayList<>();
         
         // calculate horizontal movement
         Object[] HrztlMv = new Object[2];
         Object[] VrtMv = new Object[2];
-        if( point2[0] > point1[0]){
+        if(point2[0] > point1[0]){
             HrztlMv[0] = point2[0] - point1[0];
             HrztlMv[1] = "R";
             path.add(HrztlMv);
-        } else if( point2[0] < point1[0]){
+
+        } else if(point2[0] < point1[0]){
             HrztlMv[0] = point1[0] - point2[0];
             HrztlMv[1] = "L";
             path.add(HrztlMv);
@@ -75,11 +126,12 @@ class program {
         } // else no need to move left or right
 
         //calculate vertiical movement
-        if( point2[1] > point1[1]){
+        if(point2[1] > point1[1]){
             VrtMv[0] = point2[1] - point1[1];
             VrtMv[1] = "U";
             path.add(VrtMv);
-        } else if( point2[1] < point1[1]){
+
+        } else if(point2[1] < point1[1]){
             VrtMv[0] = point1[1] - point2[1];
             VrtMv[1] = "D";
             path.add(VrtMv);
@@ -107,6 +159,7 @@ class program {
         List<Object[]> steps = new ArrayList<>();
 
         while(!coordsList.isEmpty()){
+
             // sort desc by distance
             coordsList.sort(new Comparator<int[]>() {
                 public int compare(int[] p1, int[] p2) {
@@ -117,22 +170,24 @@ class program {
                     return 0;
                 }
             });
-            int[] nextLoc = coordsList.remove(coordsList.size()-1);
+            int[] nextLoc = coordsList.remove(coordsList.size() - 1);
+
             //Pathfind from each coordinate to the next and add it to the full ArrayList.
             ArrayList<Object[]> movements = orthagPath(startCoord, nextLoc);
-            for (int i=0;i<movements.size();i++){
+            for (int i = 0; i < movements.size() ; i++){
                 
                steps.add(movements.get(i));
                 
             }
             curr[0] = nextLoc[0];
             curr[1] = nextLoc[1];
+            
         }
-        //Add the steps to go from the furthest point back to the starting point.
 
+        //Add the steps to go from the furthest point back to the starting point.
         if (curr[0] != startCoord[0] || curr[1] != startCoord[0]){
             ArrayList<Object[]> movements = orthagPath(curr, startCoord);
-            for (int i=0;i<movements.size();i++){
+            for (int i = 0; i < movements.size() ; i++){
                 
                 steps.add(movements.get(i));
             

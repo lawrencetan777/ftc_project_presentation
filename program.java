@@ -69,7 +69,7 @@ class program {
         scannerInput.close();
 
 
-       // call the function
+        // call the function
         List<Object[]> result = pathFind(startingPoint, coordsList);
 
         //print results
@@ -82,43 +82,38 @@ class program {
 
         System.out.println("Starting Point: (" + startingPoint[0] + ","+ startingPoint[1]+")");
         int distanceMoved = 0;
-       for(int a=0;a<result.size();a++){
-        Object[] aStep = result.get(a);
+        for(int a=0;a<result.size();a++){
+            Object[] aStep = result.get(a);
 
-        switch ((String)aStep[1]){
-            case "U":
-            startingPoint[1] += (int) aStep[0];
-            break;
-            case "D":
-            startingPoint[1] -= (int) aStep[0];
-            break;
-            case "L":
-            startingPoint[0] -= (int) aStep[0];
-            break;
-            case "R":
-            startingPoint[0] += (int) aStep[0];
-        }
-        distanceMoved += (int)aStep[0];
+            switch ((String)aStep[1]){
+                case "U":
+                startingPoint[1] += (int) aStep[0];
+                break;
+                case "D":
+                startingPoint[1] -= (int) aStep[0];
+                break;
+                case "L":
+                startingPoint[0] -= (int) aStep[0];
+                break;
+                case "R":
+                startingPoint[0] += (int) aStep[0];
+            }
+            distanceMoved += (int)aStep[0];
         
             //print results
-           System.out.println("("+ aStep[0]+" , "+ aStep[1] + ") AT ("+startingPoint[0] +","+startingPoint[1]+") distance traveled = " + distanceMoved); 
-       } 
+            System.out.println("("+ aStep[0]+" , "+ aStep[1] + ") AT ("+startingPoint[0] +","+startingPoint[1]+") distance traveled = " + distanceMoved); 
+        } 
        
     }
 
     /**
-     * Finds the distance between two points.
+     * Finds the manhattan distance between two points.
      * point1 - coordinates of 1st point
      * point2 - coordinates of 2nd point
-     * returns the straight line distance between points
+     * returns the manhattan distance between points
      */
-    static double distance(int[] point1, int[] point2){
-        //find the distance between 2 points using distance formula 
-        double distance = (point2[0]-point1[0])^2 + (point2[1]-point1[1])^2;
-        
-        distance = Math.sqrt(distance);
-
-        return distance;
+    static int manhattanDistance(int[] p1, int[] p2) {
+        return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
     }
     /**
      * finds the path from one point to the other with only orthagonal movements
@@ -138,7 +133,8 @@ class program {
             HrztlMv[1] = "R";
             path.add(HrztlMv);
 
-        } else if(point2[0] < point1[0]){
+        }
+        else if(point2[0] < point1[0]){
             HrztlMv[0] = point1[0] - point2[0];
             HrztlMv[1] = "L";
             path.add(HrztlMv);
@@ -151,7 +147,8 @@ class program {
             VrtMv[1] = "U";
             path.add(VrtMv);
 
-        } else if(point2[1] < point1[1]){
+        } 
+        else if(point2[1] < point1[1]){
             VrtMv[0] = point1[1] - point2[1];
             VrtMv[1] = "D";
             path.add(VrtMv);
@@ -164,24 +161,9 @@ class program {
     }
 
 
-    /**
-     * Dad's better path find algorithm.
-     */
-    static int pathFind2(int[] curr, ArrayList<int[]> coordsList, int distance, List<Object[]> steps) {
-        if (coordsList.isEmpty()) return distance;
+   
 
-        coordsList.sort(Comparator.comparing(coord -> manhattanDistance(coord, curr)));
-
-        for (int i=0;i<coordsList.size();i++) {
-            
-        }
-
-        return 1;
-    }
-
-    static int manhattanDistance(int[] p1, int[] p2) {
-        return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
-    }
+   
 
     /**
      * Find the steps that the robot needs to take to get from the start to n targets and back
@@ -204,8 +186,8 @@ class program {
             // sort desc by distance
             coordsList.sort(new Comparator<int[]>() {
                 public int compare(int[] p1, int[] p2) {
-                    double d1 = distance(curr, p1);
-                    double d2 = distance(curr, p2);
+                    double d1 = manhattanDistance(curr, p1);
+                    double d2 = manhattanDistance(curr, p2);
                     if (d1 > d2) return -1;
                     if (d2 > d1) return 1;
                     return 0;
@@ -216,7 +198,6 @@ class program {
             //Pathfind from each coordinate to the next and add it to the full ArrayList.
             ArrayList<Object[]> movements = orthagPath(curr, nextLoc);
             for (int i = 0; i < movements.size() ; i++){
-                
                steps.add(movements.get(i));
                 
             }
